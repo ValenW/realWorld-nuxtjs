@@ -12,15 +12,25 @@
             <li>That email is already taken</li>
           </ul>
 
-          <form>
+          <form @submit.prevent="onSubmit">
             <fieldset class="form-group" v-if="!isLoginMode">
               <input class="form-control form-control-lg" type="text" placeholder="Your Name" />
             </fieldset>
             <fieldset class="form-group">
-              <input class="form-control form-control-lg" type="text" placeholder="Email" />
+              <input
+                v-model="user.email"
+                class="form-control form-control-lg"
+                type="text"
+                placeholder="Email"
+              />
             </fieldset>
             <fieldset class="form-group">
-              <input class="form-control form-control-lg" type="password" placeholder="Password" />
+              <input
+                v-model="user.password"
+                class="form-control form-control-lg"
+                type="password"
+                placeholder="Password"
+              />
             </fieldset>
             <button class="btn btn-lg btn-primary pull-xs-right">{{ title }}</button>
           </form>
@@ -31,10 +41,17 @@
 </template>
 
 <script>
+import request from "@/utils/request";
+
 export default {
   name: "loginIndex",
   data() {
-    return {};
+    return {
+      user: {
+        email: "",
+        password: "",
+      },
+    };
   },
   computed: {
     mode() {
@@ -55,7 +72,33 @@ export default {
   },
   watch: {},
   mounted() {},
-  methods: {},
+  methods: {
+    async onSubmit() {
+      try {
+        const {
+          errors,
+          data: { user: user },
+        } = await request({
+          method: "POST",
+          url: "/api/users/login",
+          data: { user: this.user },
+        });
+        if (errors) {
+          this.handleError(errors);
+        } else if (user) {
+          // TODO: store the login status
+          console.log(user);
+          this.$router.push("/");
+        }
+      } catch (error) {
+        this.handleError(error);
+      }
+    },
+    handleError(error) {
+      // TODO: handle errors
+      console.error(error);
+    },
+  },
 };
 </script>
 
