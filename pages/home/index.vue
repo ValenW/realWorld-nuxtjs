@@ -85,7 +85,7 @@
 
 <script>
 export default {
-  name: "index",
+  name: "homeIndex",
   data() {
     return {};
   },

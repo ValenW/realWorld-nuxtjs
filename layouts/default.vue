@@ -44,7 +44,7 @@
 
 <script>
 export default {
-  name: "index",
+  name: "layoutIndex",
   data() {
     return {};
   },
