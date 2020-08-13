@@ -10,7 +10,7 @@
 
           <ul class="error-messages">
             <template v-for="(errs, field) in errors">
-              <li v-for="(err, index) in errs" :key="index">{{ `${field} ${err}` }}</li>
+              <li v-for="err in errs" :key="err">{{ `${field} ${err}` }}</li>
             </template>
           </ul>
 
@@ -20,6 +20,7 @@
                 class="form-control form-control-lg"
                 type="text"
                 placeholder="Your Name"
+                v-model="user.username"
                 required
               />
             </fieldset>
@@ -38,6 +39,7 @@
                 class="form-control form-control-lg"
                 type="password"
                 placeholder="Password"
+                minlength="8"
                 required
               />
             </fieldset>
@@ -50,13 +52,14 @@
 </template>
 
 <script>
-import { login } from "@/api/user";
+import { login, register } from "@/api/user";
 
 export default {
   name: "loginIndex",
   data() {
     return {
       user: {
+        username: "",
         email: "",
         password: "",
       },
@@ -77,7 +80,7 @@ export default {
       return this.isLoginMode ? "Need an account?" : "Have an account?";
     },
     tipLink() {
-      return this.isLoginMode ? "/signup" : "login";
+      return this.isLoginMode ? "/register" : "/login";
     },
   },
   watch: {},
@@ -85,10 +88,11 @@ export default {
   methods: {
     async onSubmit() {
       try {
+        const requestMethod = this.isLoginMode ? login : register;
         const {
           errors,
           data: { user: user },
-        } = await login({ user: this.user });
+        } = await requestMethod({ user: this.user });
         if (errors) {
           this.handleError(errors);
         } else if (user) {
