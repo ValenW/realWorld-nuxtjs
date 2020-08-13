@@ -68,6 +68,7 @@ export default {
       errors: {},
     };
   },
+  middleware: ["notAuthenticated"],
   computed: {
     mode() {
       return this.$route.name;

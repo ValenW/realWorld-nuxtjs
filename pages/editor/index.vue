@@ -37,6 +37,7 @@ export default {
   data() {
     return {};
   },
+  middleware: ["authenticated"],
   components: {},
   watch: {},
   mounted() {},
