@@ -1,4 +1,4 @@
-git <template>
+<template>
   <div>
     <!-- header -->
     <nav class="navbar navbar-light">
@@ -21,18 +21,22 @@ git <template>
             </nuxt-link>
           </li>
 
-          <li class="nav-item">
-            <nuxt-link class="nav-link" to="/login">Sign in</nuxt-link>
-          </li>
-          <li class="nav-item">
-            <nuxt-link class="nav-link" to="/register">Sign up</nuxt-link>
-          </li>
-
-          <li class="nav-item">
-            <nuxt-link class="nav-link" to="/profile">
-              <img class="user-pic" src="https://avatars3.githubusercontent.com/u/8122612" />Valen
-            </nuxt-link>
-          </li>
+          <template v-if="user">
+            <li class="nav-item">
+              <nuxt-link class="nav-link" to="/profile">
+                <img class="user-pic" :src="user.image" />
+                {{ user.username }}
+              </nuxt-link>
+            </li>
+          </template>
+          <template v-else>
+            <li class="nav-item">
+              <nuxt-link class="nav-link" to="/login">Sign in</nuxt-link>
+            </li>
+            <li class="nav-item">
+              <nuxt-link class="nav-link" to="/register">Sign up</nuxt-link>
+            </li>
+          </template>
         </ul>
       </div>
     </nav>
@@ -54,12 +58,16 @@ git <template>
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   name: "layoutIndex",
   data() {
     return {};
   },
-  components: {},
+  computed: {
+    ...mapState(["user"]),
+  },
   watch: {},
   mounted() {},
   methods: {},
