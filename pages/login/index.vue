@@ -96,8 +96,7 @@ export default {
         if (errors) {
           this.handleError(errors);
         } else if (user) {
-          // TODO: store the login status
-          console.log(user);
+          this.$store.commit("setUser", user);
           this.$router.push("/");
         }
       } catch (error) {
