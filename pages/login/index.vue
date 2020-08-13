@@ -9,7 +9,9 @@
           </p>
 
           <ul class="error-messages">
-            <li>That email is already taken</li>
+            <template v-for="(errs, field) in errors">
+              <li v-for="(err, index) in errs" :key="index">{{ `${field} ${err}` }}</li>
+            </template>
           </ul>
 
           <form @submit.prevent="onSubmit">
@@ -58,6 +60,7 @@ export default {
         email: "",
         password: "",
       },
+      errors: {},
     };
   },
   computed: {
@@ -98,8 +101,7 @@ export default {
       }
     },
     handleError(error) {
-      // TODO: handle errors
-      console.error(error);
+      this.errors = error.response.data.errors;
     },
   },
 };
