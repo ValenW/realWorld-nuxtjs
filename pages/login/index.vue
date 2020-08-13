@@ -52,6 +52,8 @@
 </template>
 
 <script>
+// only import in client mode
+const Cookie = process.client ? require("js-cookie") : undefined;
 import { login, register } from "@/api/user";
 
 export default {
@@ -97,6 +99,7 @@ export default {
           this.handleError(errors);
         } else if (user) {
           this.$store.commit("setUser", user);
+          Cookie.set("user", user);
           this.$router.push("/");
         }
       } catch (error) {
