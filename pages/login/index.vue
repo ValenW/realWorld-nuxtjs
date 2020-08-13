@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import request from "@/utils/request";
+import { login } from "@/api/user";
 
 export default {
   name: "loginIndex",
@@ -78,11 +78,7 @@ export default {
         const {
           errors,
           data: { user: user },
-        } = await request({
-          method: "POST",
-          url: "/api/users/login",
-          data: { user: this.user },
-        });
+        } = await login({ user: this.user });
         if (errors) {
           this.handleError(errors);
         } else if (user) {
