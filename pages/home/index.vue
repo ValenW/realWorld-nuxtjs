@@ -21,45 +21,57 @@
             </ul>
           </div>
 
-          <div class="article-preview">
+          <div class="article-preview" v-for="article in articles" :key="article.slug">
             <div class="article-meta">
-              <a href="profile.html">
-                <img src="http://i.imgur.com/Qr71crq.jpg" />
-              </a>
+              <nuxt-link
+                :to="{ name: 'profile-username', params: { username: article.author.username} }"
+              >
+                <img :src="article.author.image" />
+              </nuxt-link>
               <div class="info">
-                <a href class="author">Eric Simons</a>
-                <span class="date">January 20th</span>
+                <nuxt-link
+                  class="author"
+                  :to="{ name: 'profile-username', params: { username: article.author.username } }"
+                >{{ article.author.username}}</nuxt-link>
+                <span class="date">{{ article.createdAt }}</span>
               </div>
-              <button class="btn btn-outline-primary btn-sm pull-xs-right">
-                <i class="ion-heart"></i> 29
+              <button
+                class="btn btn-outline-primary btn-sm pull-xs-right"
+                :class="{
+                active: article.favorited }"
+              >
+                <i class="ion-heart"></i>
+                {{ article.favoritesCount }}
               </button>
             </div>
-            <a href class="preview-link">
-              <h1>How to build webapps that scale</h1>
-              <p>This is the description for the post.</p>
+            <nuxt-link
+              class="preview-link"
+              :to="{ name: 'article-slug', params: { slug: article.slug } }"
+            >
+              <h1>{{ article.title }}</h1>
+              <p>{{ article.description }}</p>
               <span>Read more...</span>
-            </a>
+            </nuxt-link>
           </div>
 
-          <div class="article-preview">
-            <div class="article-meta">
-              <a href="profile.html">
-                <img src="http://i.imgur.com/N4VcUeJ.jpg" />
-              </a>
-              <div class="info">
-                <a href class="author">Albert Pai</a>
-                <span class="date">January 20th</span>
-              </div>
-              <button class="btn btn-outline-primary btn-sm pull-xs-right">
-                <i class="ion-heart"></i> 32
-              </button>
-            </div>
-            <a href class="preview-link">
-              <h1>The song you won't ever stop singing. No matter how hard you try.</h1>
-              <p>This is the description for the post.</p>
-              <span>Read more...</span>
-            </a>
-          </div>
+          <!-- page numbers -->
+          <nav>
+            <ul class="pagination">
+              <li
+                v-for="page in totalPage"
+                :key="page"
+                class="page-item"
+                :class="{ active: currentPage === page}"
+              >
+                <nuxt-link
+                  class="page-link"
+                  :to="{
+                name: 'home',
+                query: { page }}"
+                >{{ page }}</nuxt-link>
+              </li>
+            </ul>
+          </nav>
         </div>
 
         <div class="col-md-3">
@@ -84,12 +96,36 @@
 </template>
 
 <script>
+import { getArticles } from "@/api/article";
+
 export default {
   name: "homeIndex",
   data() {
     return {};
   },
-  components: {},
+  async asyncData({ query }) {
+    const limit = 20;
+    const queryPage = Number.parseInt(query.page);
+    const currentPage = isNaN(queryPage) ? 1 : queryPage;
+    const {
+      data: { articles, articlesCount },
+    } = await getArticles({
+      limit,
+      offset: (currentPage - 1) * limit,
+    });
+    return {
+      articles,
+      articlesCount,
+      limit,
+      currentPage,
+    };
+  },
+  computed: {
+    totalPage() {
+      return Math.ceil(this.articlesCount / this.limit);
+    },
+  },
+  watchQuery: ["page"],
   watch: {},
   mounted() {},
   methods: {},
