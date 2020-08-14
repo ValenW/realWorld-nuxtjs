@@ -106,15 +106,22 @@ export default {
     const limit = 20;
     const queryPage = Number.parseInt(query.page);
     const currentPage = isNaN(queryPage) ? 1 : queryPage;
-    const {
-      data: { articles, articlesCount },
-    } = await getArticles({
-      limit,
-      offset: (currentPage - 1) * limit,
-    });
-    const {
-      data: { tags },
-    } = await getTags();
+
+    const [
+      {
+        data: { articles, articlesCount },
+      },
+      {
+        data: { tags },
+      },
+    ] = await Promise.all([
+      getArticles({
+        limit,
+        offset: (currentPage - 1) * limit,
+      }),
+      getTags(),
+    ]);
+
     return {
       articles,
       tags,
