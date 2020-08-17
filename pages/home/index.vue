@@ -67,7 +67,7 @@
                   class="page-link"
                   :to="{
                 name: 'home',
-                query: { page }}"
+                query: { page, tag: $route.query.tag }}"
                 >{{ page }}</nuxt-link>
               </li>
             </ul>
@@ -118,6 +118,7 @@ export default {
       getArticles({
         limit,
         offset: (currentPage - 1) * limit,
+        tag: query.tag,
       }),
       getTags(),
     ]);
@@ -135,7 +136,7 @@ export default {
       return Math.ceil(this.articlesCount / this.limit);
     },
   },
-  watchQuery: ["page"],
+  watchQuery: ["page", "tag"],
   watch: {},
   mounted() {},
   methods: {},
