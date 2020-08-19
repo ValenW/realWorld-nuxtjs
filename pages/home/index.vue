@@ -13,10 +13,37 @@
           <div class="feed-toggle">
             <ul class="nav nav-pills outline-active">
               <li class="nav-item">
-                <a class="nav-link disabled" href>Your Feed</a>
+                <nuxt-link
+                  v-if="user"
+                  class="nav-link"
+                  :class="{ active: tab === 'your_feed' }"
+                  exact
+                  :to="{
+                    name: 'home',
+                    query: { tab: 'your_feed' }
+                  }"
+                >Your Feed</nuxt-link>
               </li>
               <li class="nav-item">
-                <a class="nav-link active" href>Global Feed</a>
+                <nuxt-link
+                  class="nav-link"
+                  :class="{ active: tab === 'global_feed' }"
+                  exact
+                  :to="{
+                    name: 'home',
+                    query: { tab: 'global_feed' }
+                  }"
+                >Global Feed</nuxt-link>
+              </li>
+              <li class="nav-item" v-if="tag">
+                <nuxt-link
+                  class="nav-link"
+                  :class="{ active: tab === 'tag' }"
+                  :to="{
+                    name: 'home',
+                    query: { tab: 'tag', tag }
+                  }"
+                ># {{ tag }}</nuxt-link>
               </li>
             </ul>
           </div>
@@ -82,7 +109,7 @@
               <nuxt-link
                 v-for="tag in tags"
                 :key="tag"
-                :to="{ name: 'home', query: { tag }}"
+                :to="{ name: 'home', query: { tag, tab: 'tag' }}"
                 class="tag-pill tag-default"
               >{{ tag }}</nuxt-link>
             </div>
@@ -96,6 +123,7 @@
 <script>
 import { getArticles } from "@/api/article";
 import { getTags } from "@/api/tag";
+import { mapState } from "vuex";
 
 export default {
   name: "homeIndex",
@@ -106,6 +134,7 @@ export default {
     const limit = 20;
     const queryPage = Number.parseInt(query.page);
     const currentPage = isNaN(queryPage) ? 1 : queryPage;
+    const tab = query.tab || "global_feed";
 
     const [
       {
@@ -129,14 +158,17 @@ export default {
       articlesCount,
       limit,
       currentPage,
+      tab,
+      tag: query.tag,
     };
   },
   computed: {
+    ...mapState(["user"]),
     totalPage() {
       return Math.ceil(this.articlesCount / this.limit);
     },
   },
-  watchQuery: ["page", "tag"],
+  watchQuery: ["page", "tag", "tab"],
   watch: {},
   mounted() {},
   methods: {},
