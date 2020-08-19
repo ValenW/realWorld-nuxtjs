@@ -60,7 +60,7 @@
                   class="author"
                   :to="{ name: 'profile-username', params: { username: article.author.username } }"
                 >{{ article.author.username}}</nuxt-link>
-                <span class="date">{{ article.createdAt }}</span>
+                <span class="date">{{ article.createdAt | date('MMM DD, YYYY') }}</span>
               </div>
               <button
                 class="btn btn-outline-primary btn-sm pull-xs-right"
