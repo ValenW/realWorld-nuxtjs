@@ -3,7 +3,7 @@
     <div class="banner">
       <div class="container">
         <h1>{{ article.title }}</h1>
-        <ArticleMeta />
+        <ArticleMeta :article="article" />
       </div>
     </div>
 
@@ -15,7 +15,7 @@
       <hr />
 
       <div class="article-actions">
-        <ArticleMeta />
+        <ArticleMeta :article="article" />
       </div>
 
       <div class="row">

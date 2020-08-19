@@ -1,20 +1,34 @@
 <template>
   <div class="article-meta">
-    <a href>
-      <img src="http://i.imgur.com/Qr71crq.jpg" />
-    </a>
+    <nuxt-link
+      :to="{
+        name: 'profile',
+        params: { username: article.author.username }
+      }"
+    >
+      <img :src="article.author.image" />
+    </nuxt-link>
     <div class="info">
-      <a href class="author">Eric Simons</a>
-      <span class="date">January 20th</span>
+      <nuxt-link
+        class="author"
+        :to="{
+          name: 'profile',
+          params: { username: article.author.username }
+        }"
+      >{{ article.author.username }}</nuxt-link>
+      <span class="date">{{ article.createdAt | date('MMM DD, YYY')}}</span>
     </div>
-    <button class="btn btn-sm btn-outline-secondary">
+    <button class="btn btn-sm btn-outline-secondary" :class="{ active: article.author.following }">
       <i class="ion-plus-round"></i>
       &nbsp;
       Follow Eric Simons
       <span class="counter">(10)</span>
     </button>
     &nbsp;&nbsp;
-    <button class="btn btn-sm btn-outline-primary">
+    <button
+      class="btn btn-sm btn-outline-primary"
+      :class="{ active: article.favorited }"
+    >
       <i class="ion-heart"></i>
       &nbsp;
       Favorite Post
@@ -26,6 +40,12 @@
 <script>
 export default {
   name: "ArticleMeta",
+  props: {
+    article: {
+      type: Object,
+      required: true,
+    },
+  },
   data() {
     return {};
   },
