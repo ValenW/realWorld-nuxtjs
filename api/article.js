@@ -40,6 +40,20 @@ export const getArticle = (slug) => {
 export const getComments = (slug) => {
   return request({
     method: "GET",
-    url: `api/articles/${slug}/comments`,
+    url: `/api/articles/${slug}/comments`,
+  });
+};
+
+export const addComments = (slug, data) => {
+  return request({
+    method: "POST",
+    url: `/api/articles/${slug}/comments`,
+    data,
+  });
+};
+export const deleteComment = (slug, id) => {
+  return request({
+    method: "DELETE",
+    url: `/api/articles/${slug}/comments/${id}`,
   });
 };
