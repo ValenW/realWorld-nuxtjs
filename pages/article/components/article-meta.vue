@@ -35,17 +35,22 @@
     <button
       class="btn btn-sm btn-outline-primary"
       :class="{ active: article.favorited }"
+      :disabled="favoring"
+      @click="toggleFavorite"
     >
       <i class="ion-heart"></i>
       &nbsp;
-      Favorite Post
-      <span class="counter">(29)</span>
+      {{ article.favorited ? 'Unfavorite' : 'Favorite' }} Post
+      <span
+        class="counter"
+      >({{ article.favoritesCount }})</span>
     </button>
   </div>
 </template>
 
 <script>
 import { follow, unFollow } from "@/api/user";
+import { addFavorite, deleteFavorite } from "@/api/article";
 
 export default {
   name: "ArticleMeta",
@@ -58,6 +63,7 @@ export default {
   data() {
     return {
       followingAuthor: false,
+      favoring: false,
     };
   },
   components: {},
@@ -73,6 +79,17 @@ export default {
       this.$emit("updateAuthor", profile);
 
       this.followingAuthor = false;
+    },
+    async toggleFavorite() {
+      this.favoring = true;
+
+      const request = this.article.favorited ? deleteFavorite : addFavorite;
+      const {
+        data: { article },
+      } = await request(this.article.slug);
+      this.$emit("toggleFavorite", article.favorited);
+
+      this.favoring = false;
     },
   },
 };

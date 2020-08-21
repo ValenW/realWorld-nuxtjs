@@ -3,7 +3,11 @@
     <div class="banner">
       <div class="container">
         <h1>{{ article.title }}</h1>
-        <ArticleMeta :article="article" @updateAuthor="updateAuthor" />
+        <ArticleMeta
+          :article="article"
+          @updateAuthor="updateAuthor"
+          @toggleFavorite="toggleFavorite"
+        />
       </div>
     </div>
 
@@ -15,7 +19,11 @@
       <hr />
 
       <div class="article-actions">
-        <ArticleMeta :article="article" @updateAuthor="updateAuthor" />
+        <ArticleMeta
+          :article="article"
+          @updateAuthor="updateAuthor"
+          @toggleFavorite="toggleFavorite"
+        />
       </div>
 
       <ArticleComments :article="article" />
@@ -60,6 +68,10 @@ export default {
   methods: {
     updateAuthor(author) {
       Object.assign(this.article.author, author);
+    },
+    toggleFavorite(favorited) {
+      this.article.favorited = favorited;
+      this.article.favoritesCount += favorited ? 1 : -1;
     },
   },
 };
