@@ -3,7 +3,7 @@
     <div class="banner">
       <div class="container">
         <h1>{{ article.title }}</h1>
-        <ArticleMeta :article="article" />
+        <ArticleMeta :article="article" @updateAuthor="updateAuthor" />
       </div>
     </div>
 
@@ -15,7 +15,7 @@
       <hr />
 
       <div class="article-actions">
-        <ArticleMeta :article="article" />
+        <ArticleMeta :article="article" @updateAuthor="updateAuthor" />
       </div>
 
       <ArticleComments :article="article" />
@@ -57,7 +57,11 @@ export default {
   },
   watch: {},
   mounted() {},
-  methods: {},
+  methods: {
+    updateAuthor(author) {
+      Object.assign(this.article.author, author);
+    },
+  },
 };
 </script>
 

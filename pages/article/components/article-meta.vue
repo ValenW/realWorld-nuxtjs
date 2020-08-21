@@ -2,7 +2,7 @@
   <div class="article-meta">
     <nuxt-link
       :to="{
-        name: 'profile',
+        name: 'profile-username',
         params: { username: article.author.username }
       }"
     >
@@ -12,17 +12,24 @@
       <nuxt-link
         class="author"
         :to="{
-          name: 'profile',
+          name: 'profile-username',
           params: { username: article.author.username }
         }"
       >{{ article.author.username }}</nuxt-link>
       <span class="date">{{ article.createdAt | date('MMM DD, YYY')}}</span>
     </div>
-    <button class="btn btn-sm btn-outline-secondary" :class="{ active: article.author.following }">
+    <button
+      class="btn btn-sm btn-outline-secondary"
+      :class="{ active: article.author.following }"
+      :disabled="followingAuthor"
+      @click="toggleFollow"
+    >
       <i class="ion-plus-round"></i>
       &nbsp;
-      Follow Eric Simons
-      <span class="counter">(10)</span>
+      {{ article.author.following ? 'Unfollow' : 'Follow' }} {{ article.author.username }}
+      <span
+        class="counter"
+      ></span>
     </button>
     &nbsp;&nbsp;
     <button
@@ -38,6 +45,8 @@
 </template>
 
 <script>
+import { follow, unFollow } from "@/api/user";
+
 export default {
   name: "ArticleMeta",
   props: {
@@ -47,12 +56,25 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      followingAuthor: false,
+    };
   },
   components: {},
   watch: {},
-  mounted() {},
-  methods: {},
+  methods: {
+    async toggleFollow() {
+      this.followingAuthor = true;
+
+      const request = this.article.author.following ? unFollow : follow;
+      const {
+        data: { profile },
+      } = await request(this.article.author.username);
+      this.$emit("updateAuthor", profile);
+
+      this.followingAuthor = false;
+    },
+  },
 };
 </script>
 
