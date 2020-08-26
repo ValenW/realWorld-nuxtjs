@@ -23,7 +23,13 @@
 
           <template v-if="user">
             <li class="nav-item">
-              <nuxt-link class="nav-link" to="/profile">
+              <nuxt-link
+                class="nav-link"
+                :to="{
+                  name: 'profile-username',
+                  params: { username: user.username }
+                }"
+              >
                 <img class="user-pic" :src="user.image" />
                 {{ user.username }}
               </nuxt-link>

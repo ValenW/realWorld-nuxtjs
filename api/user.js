@@ -30,4 +30,11 @@ export const unFollow = (username) => {
   });
 };
 
+export const getProfile = (username) => {
+  return request({
+    method: "GET",
+    url: `/api/profiles/${username}`,
+  });
+};
+
 export default { login, register };

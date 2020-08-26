@@ -4,13 +4,22 @@
       <div class="container">
         <div class="row">
           <div class="col-xs-12 col-md-10 offset-md-1">
-            <img src="http://i.imgur.com/Qr71crq.jpg" class="user-img" />
-            <h4>Eric Simons</h4>
-            <p>Cofounder @GoThinkster, lived in Aol's HQ for a few months, kinda looks like Peeta from the Hunger Games</p>
-            <button class="btn btn-sm btn-outline-secondary action-btn">
+            <img :src="profile.image" class="user-img" />
+            <h4>{{ profile.username}}</h4>
+            <p>{{ profile.bio }}</p>
+            <button
+              v-if="user && profile.username === user.username"
+              class="btn btn-sm btn-outline-secondary action-btn"
+              :class="{ active: profile.following }"
+              :disabled="followingAuthor"
+              @click="toggleFollow"
+            >
               <i class="ion-plus-round"></i>
               &nbsp;
-              Follow Eric Simons
+              {{ profile.following ? 'Unfollow' : 'Follow' }} {{ profile.username }}
+              <span
+                class="counter"
+              ></span>
             </button>
           </div>
         </div>
@@ -81,16 +90,51 @@
 </template>
 
 <script>
+import { follow, unFollow, getProfile } from "@/api/user";
+import { mapState } from "vuex";
+
 export default {
   name: "Profile",
+  async asyncData({ params, store }) {
+    const username = params.username || store.state.user.username;
+    const {
+      data: { profile },
+    } = await getProfile(username);
+    return {
+      profile,
+    };
+  },
   data() {
-    return {};
+    return {
+      followingAuthor: false,
+    };
   },
   middleware: ["authenticated"],
   components: {},
+  computed: {
+    ...mapState(["user"]),
+  },
   watch: {},
   mounted() {},
-  methods: {},
+  methods: {
+    async toggleFollow() {
+      this.followingAuthor = true;
+
+      const request = this.profile.following ? unFollow : follow;
+      try {
+        const {
+          data: { profile },
+        } = await request(this.profile.username);
+      } catch (error) {
+        if (error.response.status === 401) {
+          this.$router.push({ name: "login" });
+        }
+      }
+
+      Object.assign(this.profile, profile);
+      this.followingAuthor = false;
+    },
+  },
 };
 </script>
 
