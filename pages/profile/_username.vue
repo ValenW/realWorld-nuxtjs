@@ -7,8 +7,17 @@
             <img :src="profile.image" class="user-img" />
             <h4>{{ profile.username}}</h4>
             <p>{{ profile.bio }}</p>
-            <button
+            <nuxt-link
               v-if="user && profile.username === user.username"
+              class="btn btn-sm btn-outline-secondary action-btn"
+              :to="{ name: 'settings' }"
+            >
+              <i class="ion-gear-a"></i>
+              &nbsp;
+              Edit Profile Settings
+            </nuxt-link>
+            <button
+              v-else
               class="btn btn-sm btn-outline-secondary action-btn"
               :class="{ active: profile.following }"
               :disabled="followingAuthor"
