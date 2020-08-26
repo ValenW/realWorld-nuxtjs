@@ -9,6 +9,7 @@
               <fieldset class="form-group">
                 <input
                   v-model="article.title"
+                  :disabled="publishing"
                   type="text"
                   class="form-control form-control-lg"
                   placeholder="Article Title"
@@ -17,6 +18,7 @@
               <fieldset class="form-group">
                 <input
                   v-model="article.description"
+                  :disabled="publishing"
                   type="text"
                   class="form-control"
                   placeholder="What's this article about?"
@@ -25,6 +27,7 @@
               <fieldset class="form-group">
                 <textarea
                   v-model="article.body"
+                  :disabled="publishing"
                   class="form-control"
                   rows="8"
                   placeholder="Write your article (in markdown)"
@@ -33,6 +36,7 @@
               <fieldset class="form-group">
                 <input
                   v-model="newTag"
+                  :disabled="publishing"
                   @keypress.enter.prevent="tagEnter"
                   type="text"
                   class="form-control"
@@ -67,6 +71,7 @@ export default {
   data() {
     return {
       newTag: "",
+      publishing: false,
       errors: {},
     };
   },
@@ -111,16 +116,18 @@ export default {
       this.article.tagList.splice(index, 1);
     },
     async publish() {
+      this.publishing = true;
       try {
         const {
           data: { article },
         } = await (this.slug
           ? updateArticle(this.slug, { article: this.article })
           : createArticle({ article: this.article }));
-        console.log(article);
         this.$router.push({ name: "article-slug", params: { slug: article.slug } });
       } catch (error) {
         this.errors = error.response.data.errors;
+      } finally {
+        this.publishing = false;
       }
     },
   },
