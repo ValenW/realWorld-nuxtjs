@@ -8,11 +8,7 @@
             <nuxt-link :to="tipLink">{{ tipMessage }}</nuxt-link>
           </p>
 
-          <ul class="error-messages">
-            <template v-for="(errs, field) in errors">
-              <li v-for="err in errs" :key="err">{{ `${field} ${err}` }}</li>
-            </template>
-          </ul>
+          <ErrorMessages :errors="errors" />
 
           <form @submit.prevent="onSubmit">
             <fieldset class="form-group" v-if="!isLoginMode">
@@ -55,6 +51,7 @@
 // only import in client mode
 const Cookie = process.client ? require("js-cookie") : undefined;
 import { login, register } from "@/api/user";
+import ErrorMessages from "@/components/errorMessages";
 
 export default {
   name: "loginIndex",
@@ -110,6 +107,9 @@ export default {
     handleError(error) {
       this.errors = error.response.data.errors;
     },
+  },
+  components: {
+    ErrorMessages,
   },
 };
 </script>
