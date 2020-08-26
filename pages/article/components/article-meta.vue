@@ -73,10 +73,16 @@ export default {
       this.followingAuthor = true;
 
       const request = this.article.author.following ? unFollow : follow;
-      const {
-        data: { profile },
-      } = await request(this.article.author.username);
-      this.$emit("updateAuthor", profile);
+      try {
+        const {
+          data: { profile },
+        } = await request(this.article.author.username);
+        this.$emit("updateAuthor", profile);
+      } catch (error) {
+        if (error.response.status === 401) {
+          this.$router.push({ name: "login" });
+        }
+      }
 
       this.followingAuthor = false;
     },
@@ -84,10 +90,16 @@ export default {
       this.favoring = true;
 
       const request = this.article.favorited ? deleteFavorite : addFavorite;
-      const {
-        data: { article },
-      } = await request(this.article.slug);
-      this.$emit("toggleFavorite", article.favorited);
+      try {
+        const {
+          data: { article },
+        } = await request(this.article.slug);
+        this.$emit("toggleFavorite", article.favorited);
+      } catch (error) {
+        if (error.response.status === 401) {
+          this.$router.push({ name: "login" });
+        }
+      }
 
       this.favoring = false;
     },
