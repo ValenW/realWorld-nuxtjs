@@ -1,7 +1,7 @@
 <template>
   <div class="row">
     <div class="col-xs-12 col-md-8 offset-md-2">
-      <form class="card comment-form" @submit.prevent="postComment">
+      <form v-if="user" class="card comment-form" @submit.prevent="postComment">
         <div class="card-block">
           <textarea
             class="form-control"
@@ -15,6 +15,11 @@
           <button class="btn btn-sm btn-primary" :disabled="posting">Post Comment</button>
         </div>
       </form>
+
+      <p v-else>
+        <nuxt-link :to="{ name: 'login'}">Sign in</nuxt-link>&nbsp;or&nbsp;
+        <nuxt-link :to="{ name: 'register'}">sign up</nuxt-link>&nbsp;to add comments on this article.
+      </p>
 
       <div class="card" v-for="comment in sortedComments" :key="comment.id">
         <div class="card-block">
@@ -42,7 +47,7 @@
             }"
           >{{ comment.author.username }}</nuxt-link>
           <span class="date-posted">{{ comment.createdAt | date('MMM DD, YYYY')}}</span>
-          <span class="mod-options" v-if="comment.author.username === user.username">
+          <span class="mod-options" v-if="user && comment.author.username === user.username">
             <i class="ion-trash-a" @click="deleteComment(comment.id)"></i>
           </span>
         </div>
