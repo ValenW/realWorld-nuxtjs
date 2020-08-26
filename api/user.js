@@ -37,4 +37,12 @@ export const getProfile = (username) => {
   });
 };
 
+export const updateProfile = (data) => {
+  return request({
+    method: "PUT",
+    url: "/api/user",
+    data,
+  });
+};
+
 export default { login, register };

@@ -1,4 +1,5 @@
 const cookieParser = process.server ? require("cookieparser") : undefined;
+const Cookie = process.client ? require("js-cookie") : undefined;
 
 // must declare as method and return object
 // to avoid conflict of data in server render
@@ -11,6 +12,11 @@ export const state = () => ({
 export const mutations = {
   setUser: (state, data) => {
     state.user = data;
+    Cookie.set("user", data);
+  },
+  removeUser: (state) => {
+    state.user = null;
+    Cookie.remove("user");
   },
 };
 
