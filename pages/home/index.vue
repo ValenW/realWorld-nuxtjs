@@ -48,39 +48,7 @@
             </ul>
           </div>
 
-          <div class="article-preview" v-for="article in articles" :key="article.slug">
-            <div class="article-meta">
-              <nuxt-link
-                :to="{ name: 'profile-username', params: { username: article.author.username} }"
-              >
-                <img :src="article.author.image" />
-              </nuxt-link>
-              <div class="info">
-                <nuxt-link
-                  class="author"
-                  :to="{ name: 'profile-username', params: { username: article.author.username } }"
-                >{{ article.author.username}}</nuxt-link>
-                <span class="date">{{ article.createdAt | date('MMM DD, YYYY') }}</span>
-              </div>
-              <button
-                class="btn btn-outline-primary btn-sm pull-xs-right"
-                :class="{ active: article.favorited }"
-                :disabled="!!article.favoring"
-                @click="onFavorite(article)"
-              >
-                <i class="ion-heart"></i>
-                {{ article.favoritesCount }}
-              </button>
-            </div>
-            <nuxt-link
-              class="preview-link"
-              :to="{ name: 'article-slug', params: { slug: article.slug } }"
-            >
-              <h1>{{ article.title }}</h1>
-              <p>{{ article.description }}</p>
-              <span>Read more...</span>
-            </nuxt-link>
-          </div>
+          <Article v-for="article in articles" :key="article.slug" :article="article" />
 
           <!-- page numbers -->
           <nav>
@@ -122,8 +90,9 @@
 </template>
 
 <script>
-import { getArticles, getYourFeedArticles, addFavorite, deleteFavorite } from "@/api/article";
+import { getArticles, getYourFeedArticles } from "@/api/article";
 import { getTags } from "@/api/tag";
+import Article from "@/components/article";
 import { mapState } from "vuex";
 
 export default {
@@ -153,7 +122,6 @@ export default {
       }),
       getTags(),
     ]);
-    articles.forEach((a) => (a.favoring = false));
 
     return {
       articles,
@@ -174,20 +142,9 @@ export default {
   watchQuery: ["page", "tag", "tab"],
   watch: {},
   mounted() {},
-  methods: {
-    async onFavorite(article) {
-      article.favoring = true;
-      if (article.favorited) {
-        await deleteFavorite(article.slug);
-        article.favorited = false;
-        article.favoritesCount += -1;
-      } else {
-        await addFavorite(article.slug);
-        article.favorited = true;
-        article.favoritesCount += 1;
-      }
-      article.favoring = false;
-    },
+  methods: {},
+  components: {
+    Article,
   },
 };
 </script>
