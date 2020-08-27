@@ -105,23 +105,31 @@ export default {
     const queryPage = Number.parseInt(query.page);
     const currentPage = isNaN(queryPage) ? 1 : queryPage;
     const tab = query.tab || "global_feed";
-    const articleLoader = tab === "your_feed" ? getYourFeedArticles : getArticles;
+    const articleLoader =
+      tab === "your_feed" ? getYourFeedArticles : getArticles;
 
-    const [
-      {
-        data: { articles, articlesCount },
-      },
-      {
-        data: { tags },
-      },
-    ] = await Promise.all([
-      articleLoader({
-        limit,
-        offset: (currentPage - 1) * limit,
-        tag: query.tag,
-      }),
-      getTags(),
-    ]);
+    let articles, articlesCount, tags;
+    try {
+      [
+        {
+          data: { articles, articlesCount },
+        },
+        {
+          data: { tags },
+        },
+      ] = await Promise.all([
+        articleLoader({
+          limit,
+          offset: (currentPage - 1) * limit,
+          tag: query.tag,
+        }),
+        getTags(),
+      ]);
+    } catch (error) {
+      articles = [];
+      articlesCount = 0;
+      tags = [];
+    }
 
     return {
       articles,
